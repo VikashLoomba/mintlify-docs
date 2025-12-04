@@ -1,0 +1,57 @@
+---
+title: "The uptake curve: ChatGPT’s remote MCP support and what it means for AI‑tool adoption"
+date: 2025-09-11
+author: Cloud MCP Team
+tags: [mcp, chatgpt, connectors, remote-servers, security, ecosystem]
+description: ChatGPT now speaks the Model Context Protocol (MCP) via custom connectors. Here’s what that unlocks for teams—and how we make deployments effortless on Cloud MCP.
+---
+
+ChatGPT now supports **custom connectors that follow the Model Context Protocol (MCP)**, letting you attach your own remote MCP servers to everyday chats. In practice, that means the assistant can securely reach into your SaaS apps or internal systems and **do** things—search logs, open tickets, update records—without bespoke plugins for each service. OpenAI’s Help Center documents plan availability (Pro and Business/Enterprise/Edu) and the basics of enabling and using custom connectors. ([OpenAI Help Center][1])
+
+If MCP is new to you, think of it as **USB‑C for AI tools**. It’s a vendor‑neutral way for assistants to discover a server’s **tools** (actions), **resources** (data), and **prompts** (reusable workflows) using a consistent schema. OpenAI’s Agents SDK and Anthropic’s documentation both use the USB‑C analogy to emphasize portability across clients. Build one MCP server and you can reuse it in multiple assistants. ([OpenAI GitHub Pages][2])
+
+### What actually changed
+
+ChatGPT’s UI can now call **remote MCP servers** you register as custom connectors, bringing the protocol from developer‑only plumbing into day‑to‑day chats. On the API side, OpenAI’s **hosted MCP tool** (in the Responses API) also connects models directly to remote MCP servers, with options like `allowed_tools` for trimming the action surface and optional **human approval** for sensitive writes. For teams standardizing on OpenAI, you now have UI **and** API paths that speak the same open protocol. ([OpenAI Cookbook][3])
+
+### Why it matters for adoption
+
+* **One server, many assistants.** MCP’s purpose is interop. Instead of writing custom adapters for each assistant, you publish an MCP server once and plug it into different clients—including ChatGPT. That lowers integration costs and shortens proof‑of‑value cycles. ([Anthropic][4])
+* **Actionable, not just informational.** With read/write tools, teams can move from “summarize what you found” to **“file this ticket and link the incident”**—with approval gates where needed. ([OpenAI Cookbook][3])
+* **A clearer security model.** Modern MCP emphasizes **Streamable HTTP** transport (HTTP + optional SSE for streaming) and a normative **OAuth 2.1** flow for HTTP transports. That makes remote servers a first‑class, cloud‑friendly target that slots into existing identity and policy. ([Model Context Protocol][5])
+
+### Quick start for teams (safely)
+
+1. **Start read‑only.** Register a connector that exposes search/reporting tools; monitor usage and results quality. (In ChatGPT, open a chat → *Tools* → *Use connectors*.) ([OpenAI Help Center][1])
+2. **Add one write tool with approvals.** Use an approval step or a callback to gate state‑changing actions until you trust the server. The Agents SDK shows this pattern explicitly. ([OpenAI GitHub Pages][2])
+3. **Harden your server.** Follow MCP’s authorization guidance and harden transports: validate the **Origin** header to resist DNS‑rebinding, scope tokens tightly, and avoid token passthrough. ([Model Context Protocol][6])
+4. **Mind compatibility.** If you see “this MCP server doesn’t implement our specification,” it often means required tools for certain workflows (e.g., `search` and `fetch`) are missing—fix the server, not the prompt. ([OpenAI Help Center][1])
+
+### What to watch next
+
+As more vendors publish MCP servers, expect **catalogs** of approved servers within organizations and better **RBAC** and audit controls around who can add and use connectors. Meanwhile, the protocol continues to mature around Streamable HTTP and OAuth 2.1, which should make security reviews more predictable. ([Model Context Protocol][5])
+
+---
+
+## How this fits into **our** workflow on CloudMCP.run
+
+We built **Cloud MCP** to remove the deployment drag so your team can focus on what the assistant *does*, not where the server runs. In minutes, you can deploy **any MCP server**—from our registry **or straight from NPM, PyPI, or GitHub**—with real‑time validation and flexible environment variables. We provision and run the server for you and hand back an OAuth 2.1-protected **unique HTTPS endpoint** you can paste into ChatGPT’s **Settings → Connectors** as a custom connector. From there, you toggle the tools you want and start using them in chat. ([Cloud MCP][7])
+
+A few niceties we’ve prioritized for production teams:
+
+* **Fast paths to “hello, tool.”** Click‑to‑deploy flows (including custom deployments), plus GitHub sign‑in and sensible defaults so you’re not spelunking Kubernetes on day one. ([Cloud MCP][8])
+* **Security‑minded by default.** We discourage risky env vars and encourage least‑privilege tokens; you control arguments, env, and (where applicable) private package access. (See the *Custom Deployment* guide for details and current availability notes.) ([Cloud MCP][7])
+* **Try first, scale later.** Spin up time‑boxed **trial deployments** to validate behavior in ChatGPT before moving to always‑on instances. ([Cloud MCP][7])
+
+**TL;DR:** ChatGPT’s MCP support makes the protocol a practical daily driver. If you want to move fast, deploy your server on **CloudMCP.run**, copy the endpoint into a **Custom Connector**, and give your team a safe, standardized way to turn conversations into **actions**. ([OpenAI Help Center][1])
+
+*Further reading:* OpenAI’s Connector guide (plans, how‑to, troubleshooting), the MCP authorization + transports docs, and the Agents SDK’s hosted/approval patterns. ([OpenAI Help Center][1])
+
+[1]: https://help.openai.com/en/articles/11487775-connectors-in-chatgpt "Connectors in ChatGPT | OpenAI Help Center"
+[2]: https://openai.github.io/openai-agents-js/guides/mcp/ "Model Context Protocol (MCP) | OpenAI Agents SDK"
+[3]: https://cookbook.openai.com/examples/mcp/mcp_tool_guide "Guide to Using the Responses API's MCP Tool"
+[4]: https://docs.anthropic.com/en/docs/mcp "Model Context Protocol (MCP) - Anthropic"
+[5]: https://modelcontextprotocol.io/specification/2025-03-26/basic/transports?utm_source=chatgpt.com "Transports"
+[6]: https://modelcontextprotocol.io/specification/draft/basic/authorization?utm_source=chatgpt.com "Authorization"
+[7]: https://cloudmcp.run/blog/deploy-any-mcp-server "Deploy Remote MCP Servers from NPM, PyPI, or GitHub with Custom Deployments"
+[8]: https://cloudmcp.run/blog/welcome "Introducing CloudMCP.run - Deploy MCP Servers Without the Headaches"

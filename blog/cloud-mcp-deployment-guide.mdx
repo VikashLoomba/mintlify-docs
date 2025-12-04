@@ -1,0 +1,214 @@
+---
+title: How to Deploy a Remote MCP Server (on cloudmcp.run)
+date: 2025-07-21
+author: Cloud MCP Team
+tags: [tutorial, mcp, deployment, guide]
+description: Learn how to deploy Model Context Protocol (MCP) servers on cloudmcp.run in just a few clicks. This step-by-step guide walks you through finding, saving, and deploying MCP servers.
+---
+
+# How to Deploy an MCP Server on CloudMCP.run
+
+Deploying an MCP (Model Context Protocol) server on CloudMCP.run is designed to be quick and straightforward. In this guide, we'll walk you through the entire process from finding a server to having it deployed and running in production.
+
+## Prerequisites
+
+Before you begin, make sure you have:
+- A cloudmcp.run account (sign up with GitHub at [cloudmcp.run](https://cloudmcp.run))
+- Basic understanding of what MCP servers do
+- Any required API keys or credentials for the server you want to deploy
+
+## Step 1: Find Your MCP Server
+
+Start by navigating to the "Find Servers" page from your dashboard. Here you can browse our registry of available MCP servers or import your own from a GitHub repository.
+
+![Find Servers page showing search functionality and Import Server button](/images/blog/cloudmcp-deployment-guide/05-find-servers.png)
+
+You can:
+- **Search the registry**: Type keywords to find servers that match your needs (e.g., "desktop-commander", "filesystem", "database")
+- **Import your own**: Click the "Import Server" button to link your own GitHub repository
+- **Bookmark/Save Servers**: Click the bookmark icon on any server card to save it to your personal library for easy access later
+
+For this guide, we'll deploy the popular `@wonderwhy-er/desktop-commander` server, which gives Claude terminal control and file system access.
+
+![Find Servers page showing search result and bookmark icon](/images/blog/cloudmcp-deployment-guide/04-bookmark-servers.png)
+
+## Step 2: Browse and Save Servers
+
+Once you've found servers you're interested in, they'll appear in your "Saved Servers" section. This is your personal library of MCP servers ready to deploy.
+
+![Deploy Saved Servers page showing three saved MCP servers with deployment options](/images/blog/cloudmcp-deployment-guide/03-saved-servers.png)
+
+From this view, you can:
+- See your deployed servers
+- See all your saved servers with their descriptions
+- Check the package name and version
+- View when each server was saved
+- Click "Deploy Server" to begin deployment
+
+Each server card shows:
+- **Package name**: The npm package or GitHub repository
+- **Version**: Current version or branch
+- **Description**: What the server does
+- **Save date**: When you added it to your library
+
+## Step 3: Configure Your Deployment
+
+Click "Deploy Server" on your chosen server to open the deployment configuration modal.
+
+![Deployment configuration modal showing fields for deployment name, command, arguments, and environment variables](/images/blog/cloudmcp-deployment-guide/02-deploy-config.png)
+
+### Configuration Options:
+
+#### Deployment Name
+Give your deployment a unique, descriptive name. This helps you identify it later, especially if you deploy the same server multiple times with different configurations.
+
+#### Command
+The command to run your server. Common options:
+- `npx` - For npm packages (most common)
+- `node` - For custom scripts
+- `python` - For Python-based servers
+
+#### Arguments
+The specific package or script to run. For npm packages, this is typically:
+- `-y @package-name` (the `-y` flag skips npm prompts)
+
+#### Environment Variables
+Add any required configuration:
+- API keys
+- Database connection strings
+- Custom settings
+- Authentication tokens
+
+> 🔒 **Security Tip**: Environment variables are encrypted and never exposed in logs or the UI after creation.
+
+### Example Configuration
+
+For the desktop-commander server:
+- **Deployment Name**: `desktop-commander`
+- **Command**: `npx`
+- **Arguments**: `-y @wonderwhy-er/desktop-commander`
+- **Environment Variables**: (Add any required API keys or settings)
+
+Click "Deploy" when you're ready to launch your server.
+
+## Step 4: Monitor Your Deployment
+
+After clicking deploy, you'll be redirected to your deployments page where you can monitor the status of your server.
+
+![Active Deployments page showing a running desktop-commander server with its details and controls](/images/blog/cloudmcp-deployment-guide/01-active-deployment.png)
+
+### Deployment Details:
+
+Your deployed server card shows:
+- **Status indicator**: Green dot for active, yellow for deploying, red for stopped
+- **Deployment date**: When the server was deployed
+- **Description**: What the server does
+- **Package info**: The underlying package being run
+- **Server URL**: Your unique endpoint (e.g., `https://2976130-e28603...`)
+
+### Available Actions:
+
+- **Copy URL**: Click the copy icon next to the server URL to copy it to your clipboard
+- **Install in VSCode**: 1-click install directly into VSCode with OAuth authentication
+- **Stop**: Shut down and delete the server 
+
+## Step 5: Connect Your MCP Client
+
+Now that your server is deployed, you can connect to it from any MCP-compatible client.
+
+### For Configuration-file Based Clients:
+
+1. Copy your server URL from the deployment card
+2. In your MCP client configuration, add:
+
+```json
+{
+  "mcpServers": {
+    "desktop-commander": {
+      "url": "https://your-server-url.cloudmcp.run"
+    }
+  }
+}
+```
+
+3. Restart your client to connect to the server
+
+### Testing Your Connection
+
+Once connected, you can test your server:
+- For desktop-commander: Try asking Claude to list files or run terminal commands
+- For database servers: Query your connected database
+- For API servers: Make requests to your configured endpoints
+
+## Managing Your Deployments
+
+Click on your deployment card to view:
+- 1-click VSCode MCP installation.
+- Performance metrics* (soon!)
+- Stop action
+
+### Scaling and Performance
+
+CloudMCP.run automatically handles:
+- **Auto-scaling**: Servers scale based on demand
+- **Load balancing**: Requests are distributed efficiently
+- **Failover**: Automatic recovery from crashes
+- **Caching**: Improved response times for repeated requests
+
+## Best Practices
+
+1. **Use descriptive names**: Make it easy to identify deployments
+2. **Stop unused servers**: Save resources by stopping inactive deployments
+
+## Troubleshooting
+
+### Server Won't Start
+- Check your environment variables are correctly formatted
+- Verify the package name and version
+- Review deployment logs for error messages
+
+### Connection Issues
+- Ensure your server URL is correctly copied
+- Check that your client supports the MCP version
+- Verify network connectivity
+
+### Performance Problems
+- Check server logs for errors
+- Consider upgrading your plan for more resources
+- Contact support if issues persist
+
+## Advanced Features
+
+### Multiple Deployments
+
+You can deploy the same server multiple times with different configurations:
+- Different environment variables
+- Separate instances for development/production
+- Isolated deployments for different projects
+
+### Custom Servers
+
+Import your own MCP servers from GitHub:
+1. Click "Import Server" on the Find Servers page
+2. Enter your GitHub repository URL
+3. Configure and deploy like any other server
+
+## What's Next?
+
+Now that you've successfully deployed your first MCP server:
+
+- 🚀 **Deploy more servers**: Explore our registry for other useful integrations
+- 📚 **Read the docs**: Deep dive into advanced configuration options
+- 💬 **Join our Discord**: Connect with other developers using CloudMCP
+- 🛠️ **Build your own**: Create custom MCP servers for your specific needs
+
+## Need Help?
+
+If you run into any issues:
+- Check our [documentation](https://docs.cloudmcp.run)
+- Join our [Discord community](https://discord.gg/cloudmcp)
+- Email support at support@cloudmcp.run
+
+---
+
+*Ready to deploy your next MCP server? [Head to your dashboard →](https://cloudmcp.run/dashboard)*

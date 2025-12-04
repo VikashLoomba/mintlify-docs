@@ -1,0 +1,103 @@
+---
+title: "Introducing Cloud MCP Router: Progressive Tool Discovery for Real‑World AI Agents"
+date: 2025-10-01
+slug: cloud-mcp-router
+description: "Stop overloading your agents with hundreds of tools. Cloud MCP Router brings progressive discovery, auth, and collision‑safe proxying to the Model Context Protocol so you can scale to real, multi‑app workflows."
+author: "Cloud MCP Team"
+tags: ["MCP", "AI Agents", "Routing", "Product Launch", "Developer Tools"]
+--------------------------------------------------------------------------
+
+> **TL;DR** — Agents don’t fail because they can’t call tools; they fail because we dump *all the tools* into the prompt at once. **Cloud MCP Router** adds a progressive, discovery‑driven layer in front of your MCP servers so the model sees *only what it needs, when it needs it*. Smaller prompts, fewer mis‑selections, and the ability to scale past arbitrary tool caps—without rewriting your existing MCP servers.
+
+---
+
+## The problem we’re solving
+
+Modern agents juggle calendars, email, docs, CRMs, repos, issues, and PRs. Hand the model 80–200 tools at once and you get:
+
+* **Context overload:** Tool schemas crowd out user content and inflate token cost.
+* **Decision paralysis:** Long, look‑alike tool lists cause mis‑selections and retries.
+* **Arbitrary caps:** Teams hide tools just to keep prompts short—shrinking what agents can actually do.
+
+This pattern is especially acute in **Model Context Protocol (MCP)** ecosystems designed for rich, tool‑heavy workflows. The result: your “power user” assistant never reaches its potential because the tool layer isn’t designed for discovery.
+
+---
+
+## Meet Cloud MCP Router
+
+**Cloud MCP Router** is a progressive, discovery‑driven layer that sits in front of your existing MCP servers (official, custom, or community) and turns any large toolset into a *query‑as‑you‑go* catalog. Instead of spraying every tool and schema into the base prompt, it exposes a small set of **router tools** that guide the agent through staged narrowing—only surfacing schemas at the moment of execution. 
+
+### What the model sees
+
+* **Start with discovery:** `discover_server_actions` returns just the *relevant* actions (by intent), not entire schemas.
+* **Drill in on demand:** `get_action_details` reveals parameters only for the chosen action.
+* **Execute confidently:** `execute_action` runs with the now‑known parameters (with elicitation automatically bridged).
+* **Stay unblocked:** `search_documentation` fetches the smallest useful doc snippets. 
+
+---
+
+## How it works (under the hood)
+
+### 1) Collision‑safe proxying of *any* MCP server
+
+Point the Router at remote MCP servers (stdio) and it will connect, list their tools/prompts/resources, and **proxy** them through a clean namespace. It sanitizes and uniquifies names, enforces length limits, and pre‑checks for collisions before exposing anything to the client—so your model never sees confusing duplicates. 
+
+> **Why that matters:** Tools stay stable and human‑readable, even across many vendors and teams. No more “mystery collisions” that silently break calls.
+
+### 2) **Router‑only mode** to shrink the prompt on demand
+
+Flip **router‑only mode** and the Router removes all proxied tools from the surface area, leaving only the small, discovery‑first router tools. When you’re ready, you can selectively re‑enable a subset of actions or whole servers—and still avoid overload. Toggle via the `Router-Mode` switch on your dashboard. 
+
+### 3) Progressive discovery & execution API (the “router tools”)
+
+* `discover_server_actions` — intent → relevant actions (fast, ranked).
+* `get_action_details` — reveal schema *only* for the chosen action.
+* `execute_action` — call the remote tool; **elicitation** is automatically bridged back to the upstream client session so the agent can ask follow‑ups mid‑execution without losing context. 
+
+### 4) Resources & prompts, too
+
+Beyond tools, the Router proxies **resources** (with stable `proxy://…` URIs) and **prompts**, keeping names safe and avoiding collisions across servers. It even installs a catch‑all resource template so ad‑hoc reads “just work.” 
+
+### 5) Auth that fits your stack
+
+The Router protects its MCP endpoint with **OAuth2** authentication against your Cloud MCP endpoint. It also publishes **well‑known protected resource metadata** so compliant clients know how to authorize. You get modern headers and correct `WWW-Authenticate` challenges out of the box. 
+
+---
+
+## Why customers adopt Cloud MCP Router
+
+* **Smaller prompts, lower cost:** Only a tiny subset of metadata is surfaced at any moment.
+* **Fewer mistakes:** Staged, ranked choices beat a flat list of 100+ tools.
+* **Scale past arbitrary caps:** Because schemas are fetched lazily, catalogs can grow to *hundreds* of actions without overwhelming the model.
+* **Keep your stack:** No rewrites required—just add your existing MCP servers and go.  
+* **Built‑in resilience:** Doc search and auth‑recovery tools unstick agents without inflating the base prompt. 
+* **Operational sanity:** Health checks, safe namespacing, and collision detection remove brittle edges before they reach production. 
+
+---
+
+## Example: What the agent’s loop looks like
+
+1. **Discover:** “Open a PR that closes issue #123” → Router returns relevant actions like `repos.create_pull_request`, `issues.update`, ranked by intent. 
+2. **Detail:** Model asks details for `repos.create_pull_request`; Router returns just that action’s schema. 
+3. **Execute:** Model calls `execute_action` with the filled parameters; if extra info is needed mid‑call, elicitation is bridged back to the client session seamlessly. 
+
+**Net effect:** The base prompt stays lean. The agent makes better choices. Your catalog can grow without fear.
+
+---
+
+## Security & enterprise readiness
+
+* **Session‑verified access tokens** (via Cloud MCP).
+* **Correct `WWW-Authenticate` challenges** and **.well‑known metadata** for resource authorization.
+
+---
+
+## Ready to route?
+
+Cloud MCP Router is available now. If you’re building assistants that need to span dozens of apps without cratering reliability or cost, this is the missing layer.
+
+* **Try it with your existing MCP servers**—no rewrites.
+* **Book a demo** to see progressive discovery reduce errors on your own workflows.
+* **Talk to us** about rollout, SSO, and enterprise controls.
+
+Let’s help your agents do more—with less.

@@ -73,14 +73,14 @@
           {
             "group": "Blog Posts",
             "pages": [
-              "cloudmcp-docs/blog/welcome",
-              "cloudmcp-docs/blog/cloud-mcp-deployment-guide",
-              "cloudmcp-docs/blog/deploy-any-mcp-server",
-              "cloudmcp-docs/blog/remote-mcp-servers-mobile-ai-agents",
-              "cloudmcp-docs/blog/chatgpt-remote-mcp",
-              "cloudmcp-docs/blog/mcp-registry-launch",
-              "cloudmcp-docs/blog/claude-connectors-guide",
-              "cloudmcp-docs/blog/cloud-mcp-router"
+              "blog/welcome",
+              "blog/cloud-mcp-deployment-guide",
+              "blog/deploy-any-mcp-server",
+              "blog/remote-mcp-servers-mobile-ai-agents",
+              "blog/chatgpt-remote-mcp",
+              "blog/mcp-registry-launch",
+              "blog/claude-connectors-guide",
+              "blog/cloud-mcp-router"
             ]
           }
         ]
